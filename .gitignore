@@ -1,0 +1,5 @@
+uwsgi_params
+mysite.sock
+mysite_uwsgi.ini
+media/
+error.log

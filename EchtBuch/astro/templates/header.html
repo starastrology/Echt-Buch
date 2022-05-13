@@ -1,0 +1,40 @@
+{% load stuff %}
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  <div class="container-fluid">
+		      <a class="navbar-brand" href="{% url 'index' %}"><img style="height: 50px;" src="{% static 'eb.png' %}" /></a>
+		          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+				        <span class="navbar-toggler-icon"></span>
+					    </button>
+					        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+							      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+								              <li class="nav-item">
+										                <a class="nav-link {% if request.resolver_match.view_name == "index" %}active{% endif %}" aria-current="page" href="{% url 'index' %}">Home</a>
+												        </li>
+													        <li class="nav-item">
+															          {% if request.user.is_authenticated %}{% get_ind_user_id request.user.id as id %}<a class="nav-link {% if request.resolver_match.view_name == "profile" %}active{% endif %}" href="{% url 'profile' id %}">{{ request.user.username }}</a>{% endif %}
+																          </li>
+																	            {% if request.user.is_authenticated %}
+																		    	
+																		            <li class="nav-item">
+																				    				<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+																									</li>	
+																											{% else %}
+
+																											        <li class="nav-item">
+																																	<a class="nav-link {% if request.resolver_match.view_name == "login" %}active{% endif %}" href="{% url 'login' %}">Login</a>
+																																		</li>
+
+																																		        <li class="nav-item">
+																																							<a class="nav-link {% if request.resolver_match.view_name == "signup" %}active{% endif %}" href="{% url 'signup' %}">Sign Up</a>
+																																								</li>		{% endif %}
+
+																																								        </li>
+																																									      </ul>
+																																									      <form class="d-flex" action="{% url 'search' %}" method="GET">
+																																											            <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+																																												            <button class="btn btn-outline-success" type="submit">Search</button>
+																																													          </form>
+																																														      </div>
+																																														        </div>
+</nav>

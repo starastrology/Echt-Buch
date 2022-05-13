@@ -1,0 +1,98 @@
+{% load static %}
+<html>
+		<head>
+		
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<link rel="apple-touch-icon" sizes="180x180" href="{% static "eb.png" %}">
+							<link rel="icon" type="image/png" sizes="32x32" href="{% static "favicon.ico" %}">
+							<link rel="icon" type="image/png" sizes="16x16" href="{% static "favicon.ico" %}">
+							<link rel="mask-icon" href="{% static "favicon.ico" %}" color="#5bbad5">
+							<meta name="msapplication-TileColor" content="#da532c">
+							<meta name="theme-color" content="#ffffff">
+								
+									<title>Sign Up</title>
+											<script   src="https://code.jquery.com/jquery-3.6.0.js"   integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="   crossorigin="anonymous"></script>
+													<script async
+														    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVmyYfu-gTw-dltcGtq2H_gOGumNsuaB0&callback=initMap&sensor=true">
+													</script>
+																<link href="{% static 'bootstrap-5.1.3-dist/css/bootstrap.css' %}" rel="stylesheet"></style>
+																		<script src="{% static 'bootstrap-5.1.3-dist/js/bootstrap.js' %}"></script>
+																			
+																				<script>
+																								$(document).ready(function(){
+																													$("#pob").change( function(){
+																																			var geocoder =  new google.maps.Geocoder();
+																														    					geocoder.geocode( { 'address': $('#pob').val()}, function(results, status) {
+																																				          					if (status == google.maps.GeocoderStatus.OK) {
+																																											            						$('#lat').val(results[0].geometry.location.lat())
+																																																		$('#lng').val(results[0].geometry.location.lng()); 
+																																											          } 					else {
+																																													              						alert("Something got wrong " + status);
+																																													            					}
+																																				        				});
+																																		});
+																												});
+		</script>
+			</head>
+				<body>
+							{% include 'header.html' %}
+									<div class="container">
+										          	{% if messages %}
+														<div class="alert alert-success">
+															        	{% for message in messages %}
+																	           		{{ message }}
+																						{% endfor %}
+																						    		</div>	
+																									    	{% endif %}
+																												<form action="{% url 'process_signup' %}" method="POST" >
+																													  <div class="mb-3">
+																														      <label for="username" class="form-label">Username</label>
+																														          <input required type="text" name="username" id="username" class="form-control" id="username">
+																															    </div>
+																															      <div class="mb-3">
+																																      	<label for="first_name" class="form-label">First Name</label>
+																																	  	<input required id="first_name" class="form-control" type=text placeholder="John" name="first_name" />
+																																		  </div>
+																																		    <div class="mb-3">
+																																			        <label for="last_name" class="form-label">Last Name</label>
+																																				    <input required type=text placeholder="Smith" name="last_name" id="last_name" class="form-control" />
+																																				      </div>
+																																				        <div class="mb-3">
+																																						    <label for="dob" class="form-label">Date of Birth</label>
+																																						        <input required type="datetime-local" name="dob" class="form-control" id="dob" />
+																																							  </div>
+																																							    <div class="mb-3">
+																																								        <label for="pob" class="form-label">Place of Birth</label>
+																																									    <input required id="pob" class="form-control" type="text" name="pob" id="pob" placeholder="City, State, Country" />
+																																									      </div>
+																																									        <div class="form-check">
+																																											  <input checked name="gender" class="form-check-input" value="Male" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+																																											    <label class="form-check-label" for="flexRadioDefault1">
+																																												        Male
+																																													  </label>
+																																										</div>
+																																										<div class="form-check">
+																																											  <input name="gender" class="form-check-input" type="radio" value="Female" name="flexRadioDefault" id="flexRadioDefault2">
+																																											    <label class="form-check-label" for="flexRadioDefault2">
+																																												        Female
+																																													  </label>
+																																										</div>
+																																										  <div class="mb-3">
+																																											      <label for="password" class="form-label">Password</label>
+																																											          <input type="password" id="password" name="password" class="form-control" id="password">
+																																												    </div>
+																																												      <div class="mb-3">
+																																													           <label for="password_confirmation" class="form-label">Password Confirmation</label>
+																																														        <input required id="password_confirmation" class="form-control" type="password" name="password_confirmation" />
+																																															  </div>
+
+																																															    {% csrf_token %}
+																																															    			<input type=hidden name=lat id=lat />
+																																																					<input type=hidden name=lng id=lng />	
+																																																					  <button type="submit" class="btn btn-primary">Sign Up</button>
+																												</form>
+																													
+									</div>
+									{% include 'footer.html' %}
+										</body>
+</html>

@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djongo = "*"
+pytz = "*"
+pymongo = "==3.12.1"
+flatlib = "*"
+tzwhere = "*"
+pillow = "*"
+geopy = "*"
+uwsgi = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
