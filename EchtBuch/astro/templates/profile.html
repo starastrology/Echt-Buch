@@ -47,8 +47,8 @@ function showPosition(position) {
 				$('#friend_request').click(function(){
 								$.ajax({
 													url: "{% url 'friend_request' %}",
-													data: {"from": {% if request.user.is_authenticated %}{% get_ind_user_id request.user.id as id %}{% endif %}{{id}}, "to": {{user.id}}},
-									 				type: "GET",	
+													data: {"to": {{user.id}}},
+									 				type: "POST",	
 													success: function(data){
 																			$('#friend_request').html('pending friend request...');
 																			$('#friend_request').prop('disabled', true);
@@ -237,9 +237,19 @@ function showPosition(position) {
 																																																																										<div class="card">
 																																																																													
 																																																																													{% for post in posts %}
-																																																																															<div class="card-body">
-																																																																																				<a href="{% url 'profile' post.from_ind.id %}"><img src="{% if post.from_ind.profile_pic %}{{ post.from_ind.profile_pic.url }}{% else %}{% static 'blank-avatar.webp' %}{%endif %}" style="width: 100px;" /></a> <b>{{ post.date_time }}</b><blockquote> {{ post.text }} </blockquote>
-																																																																																							
+	
+	<div class="card-body">
+		<div>
+<b id="comment_{{post.id}}"></b>
+		</div>
+		<a href="{% url 'profile' post.from_ind.id %}"><img src="{% if post.from_ind.profile_pic %}{{ post.from_ind.profile_pic.url }}{% else %}{% static 'blank-avatar.webp' %}{%endif %}" style="width: 100px;" /></a> <blockquote> {{ post.text }} </blockquote>
+	<script>
+		var d = new Date({{post.date_time.year}}, {{post.date_time.month|add:-1}} , {{post.date_time.day }}, {{ post.date_time.hour }}, {{ post.date_time.minute }}, 0);
+		var tzDifference = d.getTimezoneOffset();
+		var offsetTime = new Date(d.getTime() + 2 * tzDifference * 60 * 1000);
+		var html = offsetTime.getMonth() + "/" + offsetTime.getDate() + "/" + offsetTime.getFullYear() + " " + offsetTime.getHours() + ":" + String(offsetTime.getMinutes()).padStart(2, "0");
+		document.getElementById('comment_'+{{post.id}}).innerHTML = html;
+	</script>																																																																																						
 																																																																																						</div>
 																																																																																								{% endfor %}
 																																																																																										{% if not posts %}

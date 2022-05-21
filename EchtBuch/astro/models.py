@@ -2,7 +2,6 @@ from django.db.models import fields
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.utils.timezone import now
 
 class Zodiac(models.Model):
     sign = models.CharField(max_length=15)
@@ -45,6 +44,6 @@ class Friendship(models.Model):
     pending = models.BooleanField(default=True)
 class Post(models.Model):
     text = models.TextField(max_length=2000)
-    date_time = models.DateTimeField(default=now)
+    date_time = models.DateTimeField(default=datetime.now)
     from_ind = models.ForeignKey(Individual, on_delete=models.CASCADE, related_name="from_ind")
     to_ind = models.ForeignKey(Individual, on_delete=models.CASCADE, related_name="to_ind")

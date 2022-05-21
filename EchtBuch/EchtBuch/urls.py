@@ -42,6 +42,7 @@ urlpatterns = [
     path('friends_pending/', views.friends_pending_list),
     path('posts/', views.get_comments),
     path('api/post_on_wall/', views.post_on_wall_REST),
+    path('api/search/', views.search_REST),
     path('', include('astro.urls')),
     path('v1/', include(router.urls)),
     path('api', include('rest_framework.urls')), 

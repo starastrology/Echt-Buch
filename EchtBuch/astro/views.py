@@ -297,6 +297,74 @@ class LocationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+def search_REST(request):
+    search = request.GET['search']
+    search = search.split(" ")
+    users = Individual.objects.filter(Q(first_name__in=search)|Q(last_name__in=search)|Q(user__username__in=search))
+    if request.GET.get('username'):
+        u = Individual.objects.get(user__username=request.GET.get('username')) 
+        for user in users:
+            user.compatibility = 0.0
+            if u.sun_sign.value == user.sun_sign.value:
+                 user.compatibility = 1.5
+            else:
+                 diff = abs(u.sun_sign.value - user.sun_sign.value)
+                 if diff > 6:
+                     user.compatibility = (12 - diff) * .25
+                 else:
+                     user.compatibility = diff * .25
+            if u.moon_sign.value == user.moon_sign.value:
+                 user.compatibility += 1.2
+            else:
+                 diff = abs(u.moon_sign.value - user.moon_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .2
+                 else:
+                     user.compatibility += diff * .2
+            if u.rising_sign.value == user.rising_sign.value:
+                 user.compatibility += .9
+            else:
+                 diff = abs(u.rising_sign.value - user.rising_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .15
+                 else:
+                     user.compatibility += diff * .15
+            if u.mercury_sign.value == user.mercury_sign.value:
+                 user.compatibility += .6
+            else:
+                 diff = abs(u.mercury_sign.value - user.mercury_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .1
+                 else:
+                     user.compatibility += diff * .1
+            if u.venus_sign.value == user.venus_sign.value:
+                 user.compatibility += .6
+            else:
+                 diff = abs(u.venus_sign.value - user.venus_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .1
+                 else:
+                     user.compatibility += diff * .1
+            if u.mars_sign.value == user.mars_sign.value:
+                 user.compatibility += .6
+            else:
+                 diff = abs(u.mars_sign.value - user.mars_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .1
+                 else:
+                     user.compatibility += diff * .1
+            if u.jupiter_sign.value == user.jupiter_sign.value:
+                 user.compatibility += .6
+            else:
+                 diff = abs(u.jupiter_sign.value - user.jupiter_sign.value)
+                 if diff > 6:
+                     user.compatibility += (12 - diff) * .1
+                 else:
+                     user.compatibility += diff * .1
+            user.compatibility = round((user.compatibility - 1) / 5.0 * 100.0, 1)
+        users = sorted(users, key=operator.attrgetter('compatibility'), reverse=True)
+    serializer = IndividualSerializer(users, many=True)
+    return JsonResponse(serializer.data, safe=False)
 
 
 
@@ -372,7 +440,6 @@ def search(request):
         pages = range(2, ceil(users.count() / 5) + 1)
         users = sorted(users, key=operator.attrgetter('compatibility'), reverse=True)[(page-1)*5:(page-1)*5+5]
     else:
-        users = Individual.objects.all()
         pages = range(2, ceil(users.count() / 5) + 1)
         users = users[(page-1)*5:(page-1)*5+5]
 
@@ -418,14 +485,15 @@ def friend_request_REST(request):
     f.save()
     return JsonResponse({}, safe=True)
 
+@csrf_exempt
 def friend_request(request):
-    frm = request.GET["from"]
-    to = request.GET["to"]
-    ind1=Individual.objects.get(pk=frm)
-    ind2=Individual.objects.get(pk=to)
-    f = Friendship(ind1=ind1, ind2=ind2)
-    f.save()
-    return HttpResponse("Success")
+    if request.user.is_authenticated:
+        to = request.POST["to"]
+        ind1=Individual.objects.get(user=request.user)
+        ind2=Individual.objects.get(pk=to)
+        f = Friendship(ind1=ind1, ind2=ind2)
+        f.save()
+        return HttpResponse("Success")
 
 def set_last_seen(request):
     lat = request.GET["lat"]
